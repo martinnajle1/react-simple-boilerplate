@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+// Components.
+import FallingPiece from '../FallingPiece/FallingPiece';
+
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -11,6 +14,11 @@ class Main extends Component {
       <div className="main">
         X ficha cayendo: {this.props.fallingPieceX} <br/>
         Y ficha cayendo: {this.props.fallingPieceY}
+        <FallingPiece
+          type={'sarasa'}
+          xPosition={this.props.fallingPieceX}
+          yPosition={this.props.fallingPieceY}
+        />
       </div>
     );
   }
