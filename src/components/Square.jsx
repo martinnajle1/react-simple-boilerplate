@@ -6,7 +6,7 @@ class Square extends Component {
   }
   render() {
     return <div style={{ boxSizing: 'border-box',border:'gray solid 1px',
-                borderRadius: '3px', position: 'absolute', left:(this.props.piece.fallingPieceX)+'px',  top:(280-this.props.piece.fallingPieceY)+'px', height: '20px', width: '20px', background: this.props.piece.aColor}}/>;
+                borderRadius: '3px', position: 'absolute', left:(this.props.piece.fallingPieceX*20)+'px',  top:((19*20)-this.props.piece.fallingPieceY*20)+'px', height: '20px', width: '20px', background: this.props.piece.aColor}}/>;
   }
 }
 
