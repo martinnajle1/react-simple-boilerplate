@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-
+import keydown, { Keys } from 'react-keydown';
 // Components.
 import Main from './components/Main/Main';
-import keydown, { Keys } from 'react-keydown';
+import constants from './constants.js';
 const colors = ['lightsalmon', 'antiquewhite', 'lightseagreen', 'aqua',
-'lightskyblue','aquamarine','lightslategray',,'azure','lightsteelblue'];
+'lightskyblue','aquamarine','lightslategray','azure','lightsteelblue'];
 
 @keydown
 class App extends Component {
@@ -15,10 +15,10 @@ class App extends Component {
     this.state = {
       piece: {
         fallingPieceX: 4,
-        fallingPieceY: 20,
-        aColor: colors[Math.floor(Math.random() * colors.length)]
+        fallingPieceY: constants.Height,
+        aColor: this.getColorRandom()
       },     
-      speed: 100,
+      speed: constants.InitialSpeed,
       pieces: []
     };
   }
@@ -31,11 +31,10 @@ class App extends Component {
     return acc;
     }, [])
     .reduce(function(acc, line, index){
-      if (line === 9) acc.push(index); 
+      if (line === constants.Width) acc.push(index); 
       return acc;
     }, []);
     if (lines.length > 0) {
-      debugger;
       let total = [];
       lines.forEach(function(line) {
         let acc = pieces.filter(function(piece){
@@ -54,6 +53,17 @@ class App extends Component {
     }
   }
 
+  collisioned ({fallingPieceX, fallingPieceY}) {
+    return this.state.pieces.some(function(piece){
+       return ((piece.fallingPieceX === fallingPieceX) &&
+                (piece.fallingPieceY === fallingPieceY))
+    });
+  }
+
+  getColorRandom() {
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
   componentWillReceiveProps( { keydown } ) {
     if ( keydown.event ) {
 
@@ -65,7 +75,7 @@ class App extends Component {
         {
           fallingPieceX = fallingPieceX - 1;
         }
-        if (fallingPieceX > 8) fallingPieceX = 8;
+        if (fallingPieceX === constants.Width) fallingPieceX = constants.Width-1;
      }
 
      if (keydown.event.which == 37) {
@@ -88,14 +98,6 @@ class App extends Component {
     }
   }
  
-  collisioned ({fallingPieceX, fallingPieceY}) {
-    return this.state.pieces.some(function(piece){
-       return ((piece.fallingPieceX === fallingPieceX) &&
-                (piece.fallingPieceY === fallingPieceY))
-    });
-  }
-
-
   componentDidMount() {
     var myFunction = () => {
       
@@ -104,13 +106,13 @@ class App extends Component {
       activePiece.fallingPieceY = activePiece.fallingPieceY-1;
 
       if ((activePiece.fallingPieceY < 0)|| (this.collisioned(activePiece))){
-        speed = 100; 
+        speed = constants.InitialSpeed; 
         activePiece.fallingPieceY = activePiece.fallingPieceY+1;
         pieces = [...this.state.pieces, activePiece];
         activePiece = {
           fallingPieceX: 4,
-          fallingPieceY: 20,
-          aColor: colors[Math.floor(Math.random() * colors.length)]
+          fallingPieceY: constants.Height,
+          aColor: this.getColorRandom()
         };
       }
 
@@ -128,7 +130,7 @@ class App extends Component {
 
   render() {
     return (
-        <div>
+        <div className="container">
           speed: {this.state.speed}
           <Main {...this.state}/>
         </div>
