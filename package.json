@@ -44,6 +44,7 @@
   "dependencies": {
     "react": "15.2.1",
     "react-dom": "15.2.1",
-    "react-keydown": "^1.6.9"
+    "react-keydown": "^1.6.9",
+    "uuid": "^3.0.1"
   }
 }

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import keydown, { Keys } from 'react-keydown';
 // Components.
+// const uuidV4 = require('uuid/v4');
 import Main from './components/Main/Main';
 import constants from './constants.js';
 const colors = ['lightsalmon', 'antiquewhite', 'lightseagreen', 'aqua',
 'lightskyblue','aquamarine','lightslategray','azure','lightsteelblue'];
+const uuidV4 = require('uuid/v4');
 
 @keydown
 class App extends Component {
@@ -14,7 +16,7 @@ class App extends Component {
 
     this.state = {
       piece: {
-        fallingPieceX: 4,
+        fallingPieceX: Math.floor(Math.random() * (constants.Width)),
         fallingPieceY: constants.Height,
         aColor: this.getColorRandom()
       },     
@@ -48,8 +50,8 @@ class App extends Component {
         total = total.concat(acc);
       });
       
-      this.state.pieces = total; 
-      this.setState(this.state);
+      this.setState({ pieces: total });
+      debugger;
     }
   }
 
@@ -67,7 +69,7 @@ class App extends Component {
   componentWillReceiveProps( { keydown } ) {
     if ( keydown.event ) {
 
-      let {piece:{fallingPieceX, fallingPieceY}, speed} = this.state;
+      let {piece:{fallingPieceX, fallingPieceY, aColor}, speed} = this.state;
 
      if (keydown.event.which == 39) {
         fallingPieceX = fallingPieceX + 1;
@@ -92,14 +94,12 @@ class App extends Component {
         speed = 10;
      }
 
-     this.state.piece.fallingPieceX = fallingPieceX;
-     this.state.speed = speed;
-     this.setState(this.state);
+     this.setState({ piece: {fallingPieceX, fallingPieceY, aColor}, speed: speed });
     }
   }
  
   componentDidMount() {
-    var myFunction = () => {
+    const myFunction = () => {
       
       let {piece: activePiece, speed, pieces, aColor} = this.state;
       
@@ -107,10 +107,11 @@ class App extends Component {
 
       if ((activePiece.fallingPieceY < 0)|| (this.collisioned(activePiece))){
         speed = constants.InitialSpeed; 
+        activePiece.id = uuidV4();// Generate a v4 UUID (random) 
         activePiece.fallingPieceY = activePiece.fallingPieceY+1;
         pieces = [...this.state.pieces, activePiece];
         activePiece = {
-          fallingPieceX: 4,
+          fallingPieceX: Math.floor(Math.random() * (constants.Width)),
           fallingPieceY: constants.Height,
           aColor: this.getColorRandom()
         };
@@ -121,6 +122,7 @@ class App extends Component {
         speed: speed,
         pieces: pieces
       });
+      
       this.detectLine();
 
       setTimeout(myFunction, this.state.speed);
