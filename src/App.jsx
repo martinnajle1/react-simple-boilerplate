@@ -15,16 +15,17 @@ class App extends Component {
     super(props);
 
     this.state = {
-      piece: {
-        fallingPieceX: Math.floor(Math.random() * (constants.Width)),
-        fallingPieceY: constants.Height,
-        aColor: this.getColorRandom()
-      },     
+      piece: this.getRandomPiece(),
+      fallingPieceX: Math.floor(Math.random() * (constants.Width)),
+      fallingPieceY: constants.Height,
       speed: constants.InitialSpeed,
       pieces: []
     };
   }
-  
+  getRandomPiece() {
+    return constants.Pieces[Math.floor(Math.random()*constants.Pieces.length)];
+  }
+
   detectLine() {
     var {pieces} = this.state;
     var lines = pieces.reduce(function(acc, val){
@@ -68,56 +69,58 @@ class App extends Component {
   componentWillReceiveProps( { keydown } ) {
     if ( keydown.event ) {
 
-      let {piece:{fallingPieceX, fallingPieceY, aColor}, speed} = this.state;
+    let {fallingPieceX, fallingPieceY, speed, piece} = this.state;
 
-     if (keydown.event.which == 39) {
+    if (keydown.event.which === constants.ArrowLeft) {
         fallingPieceX = fallingPieceX + 1;
         if ((this.collisioned({fallingPieceX, fallingPieceY})))
         {
           fallingPieceX = fallingPieceX - 1;
         }
-        if (fallingPieceX === constants.Width) fallingPieceX = constants.Width-1;
-     }
+        if (fallingPieceX+piece.size === constants.Width+1) fallingPieceX = fallingPieceX-1;
+    }
 
-     if (keydown.event.which == 37) {
+    if (keydown.event.which === constants.ArrowRight) {
         fallingPieceX = fallingPieceX - 1;
         if ((this.collisioned({fallingPieceX, fallingPieceY})))
         {
           fallingPieceX = fallingPieceX + 1;
         }
 
-        if (fallingPieceX < 0) fallingPieceX = 0;
-     }
+        if (fallingPieceX-piece.size < 0) fallingPieceX = 0;
+    }
 
-     if (keydown.event.which == 13) {
+     if (keydown.event.which == constants.Enter) {
         speed = 10;
      }
 
-     this.setState({ piece: {fallingPieceX, fallingPieceY, aColor}, speed: speed });
+     this.setState({ fallingPieceX, fallingPieceY, speed });
     }
   }
  
   componentDidMount() {
     const myFunction = () => {
       
-      let {piece: activePiece, speed, pieces, aColor} = this.state;
-      
-      activePiece.fallingPieceY = activePiece.fallingPieceY-1;
+      let {piece, fallingPieceY, fallingPieceX, speed, pieces, aColor} = this.state;
+      fallingPieceY = fallingPieceY-1;
 
-      if ((activePiece.fallingPieceY < 0)|| (this.collisioned(activePiece))){
+      if ((fallingPieceY < 0)/*|| (this.collisioned())*/){
         speed = constants.InitialSpeed; 
-        activePiece.id = uuidV4();// Generate a v4 UUID (random) 
-        activePiece.fallingPieceY = activePiece.fallingPieceY+1;
-        pieces = [...this.state.pieces, activePiece];
-        activePiece = {
-          fallingPieceX: Math.floor(Math.random() * (constants.Width)),
-          fallingPieceY: constants.Height,
-          aColor: this.getColorRandom()
-        };
+        piece.id = uuidV4();// Generate a v4 UUID (random) 
+        debugger;
+        fallingPieceY = fallingPieceY+1;
+        pieces = [...this.state.pieces, {piece: piece, posX:fallingPieceX, posY:fallingPieceY }];
+        
+        fallingPieceX = 4;
+        piece = this.getRandomPiece();
+        fallingPieceY= 20;
+        fallingPieceX= fallingPieceX;
       }
 
       this.setState({
-        piece: activePiece,
+        piece: piece,
+        fallingPieceY: fallingPieceY,
+        fallingPieceX: fallingPieceX,
         speed: speed,
         pieces: pieces
       });

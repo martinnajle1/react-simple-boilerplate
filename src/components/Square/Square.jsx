@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Size, Width, Height} from '../../constants.js';
 import square from './square.scss';
 
+
 class Square extends Component {
 	
   constructor(props) {
