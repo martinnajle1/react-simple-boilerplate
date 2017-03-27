@@ -20,6 +20,9 @@ class Piece {
 	getSize() {
 		return this.piece.pieces[(this.current % this.numberOfRotations)].size;
 	}
+	getHeight() {
+		return this.piece.pieces[(this.current % this.numberOfRotations)].height;
+	}
 
 	rotateRight() {
 		this.current++;

@@ -9,6 +9,7 @@ const colors = ['lightsalmon', 'antiquewhite', 'lightseagreen', 'aqua',
 'lightskyblue','aquamarine','lightslategray','azure','lightsteelblue'];
 const uuidV4 = require('uuid/v4');
 
+
 @keydown
 class App extends Component {
   
@@ -20,7 +21,8 @@ class App extends Component {
       fallingPieceX: 0,
       fallingPieceY: constants.Height,
       speed: constants.InitialSpeed,
-      squares: []
+      squares: [],
+      matchLost: false
     };
   }
 
@@ -92,11 +94,18 @@ class App extends Component {
           }  
           break;
         case constants.LetterR: {
+          debugger;
             piece.rotateRight();
+            if (fallingPieceX + piece.getSize()>constants.Width) {
+              piece.rotateLeft();
+            }
           } 
         break;
         case constants.LetterT: {
             piece.rotateLeft();
+            if (fallingPieceX + piece.getSize()>constants.Width)  {
+              piece.rotateRight();
+            }
           } 
         break;
       }
@@ -107,17 +116,21 @@ class App extends Component {
   componentDidMount() {
     const myFunction = () => {
       
-      let {piece, fallingPieceY, fallingPieceX, speed, squares} = this.state;
+      let {piece, fallingPieceY, fallingPieceX, speed, squares, matchLost} = this.state;
       fallingPieceY = fallingPieceY-1;
 
       if ((fallingPieceY < 0) || (this.collisioned(piece, fallingPieceX, fallingPieceY))){
         speed = constants.InitialSpeed; 
-        piece.id = uuidV4();// Generate a v4 UUID (random) 
         fallingPieceY = fallingPieceY +1;
+        
+        matchLost = (fallingPieceY + piece.getHeight() > 20); 
+        if (matchLost) {squares= [];}
+
         let squaresPiece = piece.getSquares().map(function(square) {
-          return ({posX: Math.floor(square%4)+fallingPieceX, posY: Math.floor(square/4)+fallingPieceY, aColor: piece.piece.aColor});
+          return ({posX: Math.floor(square%4)+fallingPieceX, posY: Math.floor(square/4)+fallingPieceY, aColor: piece.piece.aColor, id: uuidV4()});
         });
-        squares = [...this.state.squares, ...squaresPiece];
+
+        squares = (matchLost) ? []: [...this.state.squares, ...squaresPiece];
         
         fallingPieceX = 0;
         piece = new Piece();
@@ -126,6 +139,7 @@ class App extends Component {
       }
 
       this.setState({
+        matchLost,
         piece: piece,
         fallingPieceY: fallingPieceY,
         fallingPieceX: fallingPieceX,
