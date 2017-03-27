@@ -1,47 +1,42 @@
 var constants = {
-    Width: 50,
+    Width: 9,
     Height: 20,
     Size: 20,
-    InitialSpeed: 100,
+    InitialSpeed: 500,
     ArrowLeft: 39,
     ArrowRight: 37,
+    LetterR: 82,
+    LetterT: 84,
     Enter: 13,
     Pieces: [
         {
-        	name:"Stick", 
-        	piece: [0, 1, 2, 3], 
-            aColor: 'red',
-            size: 4, 
+            name:"Stick", 
+            pieces: [{squares:[0, 4, 8, 12], size: 1}, {squares: [0, 1, 2, 3], size: 4}], 
+            aColor: 'red' 
         },{
         	name:"Gun", 
-        	piece: [0, 1, 5, 9], 
-            aColor: 'yellow',
-            size: 2, 
+        	pieces: [{squares: [0, 1, 4, 8], size: 2}, {squares: [0, 4, 5, 6], size: 2}, {squares: [1, 5, 8, 9], size: 2}, {squares: [0, 1, 2, 6], size: 3}], 
+            aColor: 'yellow'
         },{
         	name:"GunI", 
-        	piece: [0, 1, 5, 9], 
-            aColor: 'violet',
-            size: 2, 
+        	pieces: [{squares: [0, 1, 5, 9], size: 2}, {squares: [0, 1, 2, 4], size: 3}, {squares: [0, 4, 8, 9], size: 2}, {squares: [4, 5, 6, 2], size: 3}],
+            aColor: 'violet'
         },{
         	name:"Zheta", 
-        	piece: [8, 4, 5, 1], 
-            aColor: 'orange',
-            size: 2, 
+        	pieces: [{squares: [8, 1, 4, 5], size: 2},  {squares: [0, 1, 5, 6], size: 3}], 
+            aColor: 'orange'
         },{
         	name:"ZhetaI", 
-        	piece: [0, 4, 5, 9], 
-            aColor: 'lightblue',
-            size: 2, 
+        	pieces: [{squares: [0, 4, 5, 9], size: 2},  {squares: [1, 2, 4, 5], size: 3}], 
+            aColor: 'lightblue'
         },{
         	name:"BigSquare", 
-        	piece: [0, 1, 4, 5], 
-            aColor: 'blue',
-            size: 2,
+        	pieces: [{squares: [0, 1, 4, 5], size: 2}], 
+            aColor: 'blue'
         },{
         	name:"The", 
-        	piece:  [0, 4, 8, 5], 
-            aColor: 'green',
-            size:2 
+        	pieces:[{squares: [0, 1, 2, 5], size: 3},{squares: [0, 4, 8, 5], size: 2}, {squares: [1, 4, 5, 6], size: 3},{squares: [1, 4, 5, 9], size: 2}],
+            aColor: 'green'
         }
     ]
 }

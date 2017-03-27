@@ -10,14 +10,13 @@ class Main extends Component {
 
 
   render() {
-    const pieces = this.props.pieces.map(function(piece){
-      debugger;
-      return <Piece key={piece.id} piece={piece.piece} posX={piece.posX} posY={piece.posY}/>      
+    const pieces = this.props.squares.map(function(square){
+      return <Square posX={square.posX} posY={square.posY} aColor={square.aColor} />      
     });
 
     return (
       <div className="main" style={{ position: 'relative', height: Height*Size, width: Width*Size}}>
-        <Piece piece={this.props.piece} posX={this.props.fallingPieceX} posY={this.props.fallingPieceY}/>      
+        <Piece piece={this.props.piece} posX={this.props.fallingPieceX} posY={this.props.fallingPieceY} />      
         ficha cayendo: <br/>
         <br/>  
         {pieces}

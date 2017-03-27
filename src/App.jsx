@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import keydown, { Keys } from 'react-keydown';
 // Components.
+import Piece from './components/Piece';
 // const uuidV4 = require('uuid/v4');
 import Main from './components/Main/Main';
 import constants from './constants.js';
@@ -15,50 +16,46 @@ class App extends Component {
     super(props);
 
     this.state = {
-      piece: this.getRandomPiece(),
-      fallingPieceX: Math.floor(Math.random() * (constants.Width)),
+      piece: new Piece(),
+      fallingPieceX: 0,
       fallingPieceY: constants.Height,
       speed: constants.InitialSpeed,
-      pieces: []
+      squares: []
     };
-  }
-  getRandomPiece() {
-    return constants.Pieces[Math.floor(Math.random()*constants.Pieces.length)];
   }
 
   detectLine() {
-    var {pieces} = this.state;
-    var lines = pieces.reduce(function(acc, val){
-    if (acc[val.fallingPieceY]) acc[val.fallingPieceY]++
-    else acc[val.fallingPieceY] = 1;
-    return acc;
-    }, [])
+    var {squares} = this.state;
+    var lines = squares.reduce(function(acc, square){
+        if (acc[square.posY]) acc[square.posY]++
+        else acc[square.posY] = 1;
+      return acc;
+      },[])
     .reduce(function(acc, line, index){
-      if (line === constants.Width) acc.push(index); 
+      if (line === constants.Width) {
+        acc.push(index); 
+        console.log('LINE DETECTED:', index);
+      }
       return acc;
     }, []);
     if (lines.length > 0) {
-      let total = [];
-      lines.forEach(function(line) {
-        let acc = pieces.filter(function(piece){
-          if (piece.fallingPieceY !== line){
-            if (piece.fallingPieceY > line) {
-               piece.fallingPieceY--;
+        var acc = squares.filter(function(square){
+            if (!lines.includes(square.posY)) {
+                square.posY = square.posY - lines.filter(function(line) {return line < square.posY;}).length;
+                return square;
             }
-            return piece;
-          }
         });
-        total = total.concat(acc);
-      });
-      
-      this.setState({ pieces: total });
+      this.setState({ squares: acc }); 
     }
   }
 
-  collisioned ({fallingPieceX, fallingPieceY}) {
-    return this.state.pieces.some(function(piece){
-       return ((piece.fallingPieceX === fallingPieceX) &&
-                (piece.fallingPieceY === fallingPieceY))
+  collisioned (pieceFalling, fallingX, fallingY) {
+    return this.state.squares.some( function(square){
+      return pieceFalling.getSquares().some( function(squareFalling) {
+        return ( ((fallingX+(squareFalling %4)) === (square.posX)) &&
+         ((fallingY+(Math.floor(squareFalling /4))) === (square.posY)) );
+      
+      });
     });
   }
 
@@ -67,52 +64,63 @@ class App extends Component {
   }
 
   componentWillReceiveProps( { keydown } ) {
+
     if ( keydown.event ) {
 
-    let {fallingPieceX, fallingPieceY, speed, piece} = this.state;
-
-    if (keydown.event.which === constants.ArrowLeft) {
-        fallingPieceX = fallingPieceX + 1;
-        if ((this.collisioned({fallingPieceX, fallingPieceY})))
-        {
-          fallingPieceX = fallingPieceX - 1;
-        }
-        if (fallingPieceX+piece.size === constants.Width+1) fallingPieceX = fallingPieceX-1;
-    }
-
-    if (keydown.event.which === constants.ArrowRight) {
-        fallingPieceX = fallingPieceX - 1;
-        if ((this.collisioned({fallingPieceX, fallingPieceY})))
-        {
+      let {fallingPieceX, fallingPieceY, speed, piece} = this.state;
+      switch (keydown.event.which) {
+        case constants.ArrowLeft: {
           fallingPieceX = fallingPieceX + 1;
+          if ((this.collisioned(piece, fallingPieceX, fallingPieceY)))
+          {
+            fallingPieceX = fallingPieceX - 1;
+          }
+          if (fallingPieceX+piece.getSize() === constants.Width+1) fallingPieceX = fallingPieceX-1;
         }
-
-        if (fallingPieceX-piece.size < 0) fallingPieceX = 0;
-    }
-
-     if (keydown.event.which == constants.Enter) {
-        speed = 10;
-     }
-
-     this.setState({ fallingPieceX, fallingPieceY, speed });
+        break;
+        case constants.ArrowRight:  {
+          fallingPieceX = fallingPieceX - 1;
+          if ((this.collisioned(piece, fallingPieceX, fallingPieceY)))
+          {
+            fallingPieceX = fallingPieceX + 1;
+          }
+          if (fallingPieceX < 0) fallingPieceX = 0;
+        }
+        break;
+        case constants.Enter: {
+            speed = 10;
+          }  
+          break;
+        case constants.LetterR: {
+            piece.rotateRight();
+          } 
+        break;
+        case constants.LetterT: {
+            piece.rotateLeft();
+          } 
+        break;
+      }
+      this.setState({ fallingPieceX, fallingPieceY, speed});
     }
   }
  
   componentDidMount() {
     const myFunction = () => {
       
-      let {piece, fallingPieceY, fallingPieceX, speed, pieces, aColor} = this.state;
+      let {piece, fallingPieceY, fallingPieceX, speed, squares} = this.state;
       fallingPieceY = fallingPieceY-1;
 
-      if ((fallingPieceY < 0)/*|| (this.collisioned())*/){
+      if ((fallingPieceY < 0) || (this.collisioned(piece, fallingPieceX, fallingPieceY))){
         speed = constants.InitialSpeed; 
         piece.id = uuidV4();// Generate a v4 UUID (random) 
-        debugger;
-        fallingPieceY = fallingPieceY+1;
-        pieces = [...this.state.pieces, {piece: piece, posX:fallingPieceX, posY:fallingPieceY }];
+        fallingPieceY = fallingPieceY +1;
+        let squaresPiece = piece.getSquares().map(function(square) {
+          return ({posX: Math.floor(square%4)+fallingPieceX, posY: Math.floor(square/4)+fallingPieceY, aColor: piece.piece.aColor});
+        });
+        squares = [...this.state.squares, ...squaresPiece];
         
-        fallingPieceX = 4;
-        piece = this.getRandomPiece();
+        fallingPieceX = 0;
+        piece = new Piece();
         fallingPieceY= 20;
         fallingPieceX= fallingPieceX;
       }
@@ -122,7 +130,7 @@ class App extends Component {
         fallingPieceY: fallingPieceY,
         fallingPieceX: fallingPieceX,
         speed: speed,
-        pieces: pieces
+        squares: squares
       });
       
       this.detectLine();

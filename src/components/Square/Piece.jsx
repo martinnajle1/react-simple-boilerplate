@@ -16,8 +16,9 @@ class Piece extends Component {
     let squares = [];
     const {posX, posY} = this.props;
     const newPiece = this.props.piece; 
-    squares = newPiece.piece.map(function(square){
-        return <Square key={uuidV4()} piece={{fallingPieceX: posX+(square % 4), fallingPieceY: (posY+Math.floor(square / 4)), aColor: newPiece.aColor }}/>;
+
+    squares = newPiece.getSquares().map(function(square){
+        return <Square key={uuidV4()} posX={posX+(square % 4)} posY={(posY+Math.floor(square / 4))} aColor={newPiece.piece.aColor}/>;
     });
     return <div>{squares}</div>;
   }

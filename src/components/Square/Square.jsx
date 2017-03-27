@@ -11,11 +11,11 @@ class Square extends Component {
 
   render() {
     return <div className="square" style={{ 
-    	left:(this.props.piece.fallingPieceX*Size)+'px',  
-	    top:(((Height-1)*Size)-this.props.piece.fallingPieceY*Size)+'px', 
+    	left:(this.props.posX*Size)+'px',  
+	    top:(((Height-1)*Size)-this.props.posY*Size)+'px', 
 	    height: Size +'px', 
 	    width: Size +'px', 
-	    background: this.props.piece.aColor
+	    background: this.props.aColor
 	}}/>;
   }
 }
