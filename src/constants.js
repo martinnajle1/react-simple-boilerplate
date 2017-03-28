@@ -1,13 +1,16 @@
 var constants = {
-    Width: 9,
-    Height: 20,
-    Size: 20,
+    WidthBoard: 9,
+    HeightBoard: 20,
+    // pixels 
+    SizeSquare: 20,
+    SizePiece: 4,
     InitialSpeed: 500,
     ArrowLeft: 39,
     ArrowRight: 37,
     LetterR: 82,
     LetterT: 84,
     Enter: 13,
+    MaxSpeed: 10,
     Pieces: [
         {
             name:"Stick", 

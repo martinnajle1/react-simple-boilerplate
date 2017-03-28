@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Size, Width, Height} from '../../constants.js';
+import {SizeSquare, WidthBoard, HeightBoard} from '../../constants.js';
 import square from './square.scss';
 
 
@@ -11,10 +11,10 @@ class Square extends Component {
 
   render() {
     return <div className="square" style={{ 
-    	left:(this.props.posX*Size)+'px',  
-	    top:(((Height-1)*Size)-this.props.posY*Size)+'px', 
-	    height: Size +'px', 
-	    width: Size +'px', 
+    	left:(this.props.posX*SizeSquare)+'px',  
+	    top:(((HeightBoard-1)*SizeSquare)-this.props.posY*SizeSquare)+'px', 
+	    height: SizeSquare +'px', 
+	    width: SizeSquare +'px', 
 	    background: this.props.aColor
 	}}/>;
   }

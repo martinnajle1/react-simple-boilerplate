@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import keydown, { Keys } from 'react-keydown';
 // Components.
-import Piece from './components/Piece';
+import Piece from './components/Piece/Piece';
 // const uuidV4 = require('uuid/v4');
 import Main from './components/Main/Main';
 import constants from './constants.js';
-const colors = ['lightsalmon', 'antiquewhite', 'lightseagreen', 'aqua',
-'lightskyblue','aquamarine','lightslategray','azure','lightsteelblue'];
+
 const uuidV4 = require('uuid/v4');
 
 
@@ -19,11 +18,22 @@ class App extends Component {
     this.state = {
       piece: new Piece(),
       fallingPieceX: 0,
-      fallingPieceY: constants.Height,
+      fallingPieceY: constants.HeightBoard,
       speed: constants.InitialSpeed,
       squares: [],
       matchLost: false
     };
+  }
+
+  restartGame() {
+    this.setState({
+      matchLost: false,
+      piece: new Piece(),
+      fallingPieceX: 0,
+      fallingPieceY: constants.HeightBoard,
+      speed: constants.InitialSpeed,
+      squares: [],
+    });
   }
 
   detectLine() {
@@ -34,7 +44,7 @@ class App extends Component {
       return acc;
       },[])
     .reduce(function(acc, line, index){
-      if (line === constants.Width) {
+      if (line === constants.WidthBoard) {
         acc.push(index); 
         console.log('LINE DETECTED:', index);
       }
@@ -54,15 +64,11 @@ class App extends Component {
   collisioned (pieceFalling, fallingX, fallingY) {
     return this.state.squares.some( function(square){
       return pieceFalling.getSquares().some( function(squareFalling) {
-        return ( ((fallingX+(squareFalling %4)) === (square.posX)) &&
-         ((fallingY+(Math.floor(squareFalling /4))) === (square.posY)) );
+        return ( ((fallingX+(squareFalling % constants.SizePiece)) === (square.posX)) &&
+         ((fallingY+(Math.floor(squareFalling / constants.SizePiece))) === (square.posY)) );
       
       });
     });
-  }
-
-  getColorRandom() {
-    return colors[Math.floor(Math.random() * colors.length)];
   }
 
   componentWillReceiveProps( { keydown } ) {
@@ -77,7 +83,7 @@ class App extends Component {
           {
             fallingPieceX = fallingPieceX - 1;
           }
-          if (fallingPieceX+piece.getSize() === constants.Width+1) fallingPieceX = fallingPieceX-1;
+          if (fallingPieceX+piece.getSize() === constants.WidthBoard+1) fallingPieceX = fallingPieceX-1;
         }
         break;
         case constants.ArrowRight:  {
@@ -90,20 +96,20 @@ class App extends Component {
         }
         break;
         case constants.Enter: {
-            speed = 10;
+            speed = constants.MaxSpeed;
           }  
           break;
         case constants.LetterR: {
           debugger;
             piece.rotateRight();
-            if (fallingPieceX + piece.getSize()>constants.Width) {
+            if (fallingPieceX + piece.getSize()>constants.WidthBoard) {
               piece.rotateLeft();
             }
           } 
         break;
         case constants.LetterT: {
             piece.rotateLeft();
-            if (fallingPieceX + piece.getSize()>constants.Width)  {
+            if (fallingPieceX + piece.getSize()>constants.WidthBoard)  {
               piece.rotateRight();
             }
           } 
@@ -115,7 +121,6 @@ class App extends Component {
  
   componentDidMount() {
     const myFunction = () => {
-      
       let {piece, fallingPieceY, fallingPieceX, speed, squares, matchLost} = this.state;
       fallingPieceY = fallingPieceY-1;
 
@@ -123,29 +128,33 @@ class App extends Component {
         speed = constants.InitialSpeed; 
         fallingPieceY = fallingPieceY +1;
         
-        matchLost = (fallingPieceY + piece.getHeight() > 20); 
-        if (matchLost) {squares= [];}
+        matchLost = (fallingPieceY + piece.getHeight() > constants.HeightBoard); 
+        if (matchLost) {
+          this.restartGame();
+        }
+        else {
+          let squaresPiece = piece.getSquares().map(function(square) {
+            return ({posX: Math.floor(square%constants.SizePiece)+fallingPieceX, posY: Math.floor(square/constants.SizePiece)+fallingPieceY, aColor: piece.piece.aColor, id: uuidV4()});
+          });
+          squares = [...this.state.squares, ...squaresPiece];
+          piece = new Piece();
+          fallingPieceY= constants.HeightBoard;
+          fallingPieceX= fallingPieceX;
 
-        let squaresPiece = piece.getSquares().map(function(square) {
-          return ({posX: Math.floor(square%4)+fallingPieceX, posY: Math.floor(square/4)+fallingPieceY, aColor: piece.piece.aColor, id: uuidV4()});
-        });
+        }
 
-        squares = (matchLost) ? []: [...this.state.squares, ...squaresPiece];
-        
-        fallingPieceX = 0;
-        piece = new Piece();
-        fallingPieceY= 20;
-        fallingPieceX= fallingPieceX;
       }
-
-      this.setState({
-        matchLost,
-        piece: piece,
-        fallingPieceY: fallingPieceY,
-        fallingPieceX: fallingPieceX,
-        speed: speed,
-        squares: squares
-      });
+      if (!matchLost) {
+          this.setState({
+          matchLost,
+          piece: piece,
+          fallingPieceY: fallingPieceY,
+          fallingPieceX: fallingPieceX,
+          speed: speed,
+          squares: squares
+        });
+      }
+      
       
       this.detectLine();
 
