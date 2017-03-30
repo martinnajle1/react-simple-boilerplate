@@ -4,3 +4,13 @@
    border-radius: 3px; 
    position: absolute; 
 }
+
+.pauseMessage {
+  border-radius: 5%;
+  border: 1px solid gray;
+  padding: 5px;
+  font-size: 28px;
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+}
