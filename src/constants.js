@@ -9,6 +9,7 @@ var constants = {
     ArrowRight: 37,
     LetterR: 82,
     LetterT: 84,
+    LetterP: 80,
     Enter: 13,
     MaxSpeed: 10,
     Pieces: [
@@ -18,7 +19,7 @@ var constants = {
             aColor: 'red' 
         },{
         	name:"Gun", 
-        	pieces: [{squares: [0, 1, 4, 8], size: 2, height: 3}, {squares: [0, 4, 5, 6], size: 2, height: 3}, {squares: [1, 5, 8, 9], size: 2, height: 3}, {squares: [0, 1, 2, 6], size: 3, height: 2}], 
+        	pieces: [{squares: [0, 1, 4, 8], size: 2, height: 3}, {squares: [0, 4, 5, 6], size: 3, height: 2}, {squares: [1, 5, 8, 9], size: 2, height: 3}, {squares: [0, 1, 2, 6], size: 3, height: 2}], 
             aColor: 'yellow'
         },{
         	name:"GunI", 
