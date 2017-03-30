@@ -16,17 +16,20 @@ class App extends Component {
     super(props);
 
     this.state = {
+      numberOfLines: 0,
       piece: new Piece(),
       fallingPieceX: 0,
       fallingPieceY: constants.HeightBoard,
       speed: constants.InitialSpeed,
       squares: [],
-      matchLost: false
+      matchLost: false,
+      pause: false
     };
   }
 
   restartGame() {
     this.setState({
+      numberOfLines: 0,
       matchLost: false,
       piece: new Piece(),
       fallingPieceX: 0,
@@ -37,7 +40,7 @@ class App extends Component {
   }
 
   detectLine() {
-    var {squares} = this.state;
+    var {squares, numberOfLines, speed} = this.state;
     var lines = squares.reduce(function(acc, square){
         if (acc[square.posY]) acc[square.posY]++
         else acc[square.posY] = 1;
@@ -46,18 +49,19 @@ class App extends Component {
     .reduce(function(acc, line, index){
       if (line === constants.WidthBoard) {
         acc.push(index); 
-        console.log('LINE DETECTED:', index);
+        
       }
       return acc;
     }, []);
     if (lines.length > 0) {
+        numberOfLines= lines.length + numberOfLines;
         var acc = squares.filter(function(square){
             if (!lines.includes(square.posY)) {
                 square.posY = square.posY - lines.filter(function(line) {return line < square.posY;}).length;
                 return square;
             }
         });
-      this.setState({ squares: acc }); 
+      this.setState({ squares: acc, speed, numberOfLines }); 
     }
   }
 
@@ -75,7 +79,7 @@ class App extends Component {
 
     if ( keydown.event ) {
 
-      let {fallingPieceX, fallingPieceY, speed, piece} = this.state;
+      let {fallingPieceX, fallingPieceY, speed, piece, pause} = this.state;
       switch (keydown.event.which) {
         case constants.ArrowLeft: {
           fallingPieceX = fallingPieceX + 1;
@@ -98,9 +102,13 @@ class App extends Component {
         case constants.Enter: {
             speed = constants.MaxSpeed;
           }  
-          break;
+        break;
+        case constants.LetterP: {
+            debugger;
+            pause = !pause;
+          }  
+        break;
         case constants.LetterR: {
-          debugger;
             piece.rotateRight();
             if (fallingPieceX + piece.getSize()>constants.WidthBoard) {
               piece.rotateLeft();
@@ -115,35 +123,39 @@ class App extends Component {
           } 
         break;
       }
-      this.setState({ fallingPieceX, fallingPieceY, speed});
+      this.setState({ fallingPieceX, fallingPieceY, speed, pause});
     }
   }
  
   componentDidMount() {
     const myFunction = () => {
-      let {piece, fallingPieceY, fallingPieceX, speed, squares, matchLost} = this.state;
-      fallingPieceY = fallingPieceY-1;
+      let {piece, fallingPieceY, fallingPieceX, speed, squares, matchLost, pause} = this.state;
 
-      if ((fallingPieceY < 0) || (this.collisioned(piece, fallingPieceX, fallingPieceY))){
-        speed = constants.InitialSpeed; 
-        fallingPieceY = fallingPieceY +1;
-        
-        matchLost = (fallingPieceY + piece.getHeight() > constants.HeightBoard); 
-        if (matchLost) {
-          this.restartGame();
+      if (!pause) {
+        fallingPieceY = fallingPieceY-1;
+
+        if ((fallingPieceY < 0) || (this.collisioned(piece, fallingPieceX, fallingPieceY))){
+          speed = constants.InitialSpeed; 
+          fallingPieceY = fallingPieceY +1;
+          
+          matchLost = (fallingPieceY + piece.getHeight() > constants.HeightBoard); 
+          if (matchLost) {
+            this.restartGame();
+          }
+          else {
+            
+            let squaresPiece = piece.getSquares().map(function(square) {
+              return ({posX: Math.floor(square%constants.SizePiece)+fallingPieceX, posY: Math.floor(square/constants.SizePiece)+fallingPieceY, aColor: piece.piece.aColor, id: uuidV4()});
+            });
+
+            squares = [...this.state.squares, ...squaresPiece];
+            piece = new Piece();
+            fallingPieceY= constants.HeightBoard;
+            fallingPieceX= 0;
+          }
         }
-        else {
-          let squaresPiece = piece.getSquares().map(function(square) {
-            return ({posX: Math.floor(square%constants.SizePiece)+fallingPieceX, posY: Math.floor(square/constants.SizePiece)+fallingPieceY, aColor: piece.piece.aColor, id: uuidV4()});
-          });
-          squares = [...this.state.squares, ...squaresPiece];
-          piece = new Piece();
-          fallingPieceY= constants.HeightBoard;
-          fallingPieceX= fallingPieceX;
-
-        }
-
       }
+      
       if (!matchLost) {
           this.setState({
           matchLost,
@@ -164,10 +176,14 @@ class App extends Component {
   }
 
   render() {
+    const pauseElement = (this.state.pause) ? <div className='pauseMessage'>PAUSE</div>: null; 
+
     return (
         <div className="container">
           speed: {this.state.speed}
+          {pauseElement}
           <Main {...this.state}/>
+
         </div>
     );
   }
