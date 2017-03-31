@@ -47,6 +47,7 @@
     "react-dom": "15.2.1",
     "react-keydown": "^1.6.9",
     "uuid": "^3.0.1",
-    "webpack": "^1.13.1"
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1"
   }
 }
