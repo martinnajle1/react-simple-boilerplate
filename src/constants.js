@@ -4,14 +4,16 @@ var constants = {
     // pixels 
     SizeSquare: 20,
     SizePiece: 4,
-    InitialSpeed: 500,
-    ArrowLeft: 39,
-    ArrowRight: 37,
-    LetterR: 82,
-    LetterT: 84,
-    LetterP: 80,
-    Enter: 13,
+    InitialSpeed: 1000,
+    ARROWLEFT: 39,
+    ARROWRIGHT: 37,
+    LETTER_R: 82,
+    LETTER_T: 84,
+    LETTER_S: 83,
+    LETTER_P: 80,
+    ENTER: 13,
     MaxSpeed: 10,
+    Weights: [40, 100, 300, 1200],
     Pieces: [
         {
             name:"Stick", 
