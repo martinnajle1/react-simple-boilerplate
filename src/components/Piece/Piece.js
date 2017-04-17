@@ -31,7 +31,7 @@ class Piece {
 
 	rotateLeft() {
 		this.current--;
-		if (this.current < 0) this.current = this.numberOfRotations;
+		if (this.current < 0) this.current = this.numberOfRotations-1;
 		return this;
 	}
 }
