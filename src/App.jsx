@@ -7,7 +7,10 @@ import Main from './components/Main/Main';
 import constants from './constants.js';
 
 const uuidV4 = require('uuid/v4');
+const myAudio = new Audio('../sounds/Tetris_theme.ogg');
 
+let myFunction;
+var timeout;
 
 @keydown
 class App extends Component {
@@ -15,7 +18,14 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    //TETRIS THEME
+    myAudio.loop = true;
+    myAudio.play();
+
     this.state = {
+      level: 0,
+      score: 0,
+      heightMax: 0,
       numberOfLines: 0,
       piece: new Piece(),
       fallingPieceX: 0,
@@ -29,6 +39,9 @@ class App extends Component {
 
   restartGame() {
     this.setState({
+      level: 0, 
+      score: 0,
+      heightMax: 0,
       numberOfLines: 0,
       matchLost: false,
       piece: new Piece(),
@@ -40,7 +53,7 @@ class App extends Component {
   }
 
   detectLine() {
-    var {squares, numberOfLines, speed} = this.state;
+    var {squares, numberOfLines, speed, level, heightMax, score} = this.state;
     var lines = squares.reduce(function(acc, square){
         if (acc[square.posY]) acc[square.posY]++
         else acc[square.posY] = 1;
@@ -49,105 +62,136 @@ class App extends Component {
     .reduce(function(acc, line, index){
       if (line === constants.WidthBoard) {
         acc.push(index); 
-        
       }
       return acc;
     }, []);
     if (lines.length > 0) {
         numberOfLines= lines.length + numberOfLines;
+        heightMax = heightMax - lines.length;
         var acc = squares.filter(function(square){
             if (!lines.includes(square.posY)) {
                 square.posY = square.posY - lines.filter(function(line) {return line < square.posY;}).length;
                 return square;
             }
         });
-      this.setState({ squares: acc, speed, numberOfLines }); 
+        level = Math.floor(numberOfLines/10);
+        score = score + this.getPoints(level, lines.length);
+        if (level >= 10) level = 9;
+        speed = constants.InitialSpeed - (level * 100);
+      this.setState({ squares: acc, speed, numberOfLines, level, heightMax, score}); 
     }
   }
 
-  collisioned (pieceFalling, fallingX, fallingY) {
-    return this.state.squares.some( function(square){
+  collisioned (pieceFalling, fallingX, fallingY, heightMax) {
+    if (fallingY>heightMax) return false;
+    return this.state.squares.some(function(square){
       return pieceFalling.getSquares().some( function(squareFalling) {
         return ( ((fallingX+(squareFalling % constants.SizePiece)) === (square.posX)) &&
          ((fallingY+(Math.floor(squareFalling / constants.SizePiece))) === (square.posY)) );
-      
       });
     });
+  }
+
+  getPoints (level, lines) {
+    return ((level+1)*constants.Weights[lines-1]);
   }
 
   componentWillReceiveProps( { keydown } ) {
 
     if ( keydown.event ) {
 
-      let {fallingPieceX, fallingPieceY, speed, piece, pause} = this.state;
+      let {fallingPieceX, fallingPieceY, speed, piece, pause, heightMax} = this.state;
+
       switch (keydown.event.which) {
-        case constants.ArrowLeft: {
-          fallingPieceX = fallingPieceX + 1;
-          if ((this.collisioned(piece, fallingPieceX, fallingPieceY)))
-          {
-            fallingPieceX = fallingPieceX - 1;
-          }
-          if (fallingPieceX+piece.getSize() === constants.WidthBoard+1) fallingPieceX = fallingPieceX-1;
-        }
-        break;
-        case constants.ArrowRight:  {
-          fallingPieceX = fallingPieceX - 1;
-          if ((this.collisioned(piece, fallingPieceX, fallingPieceY)))
-          {
+
+        case constants.ARROWLEFT: {
+          if (!pause) {
             fallingPieceX = fallingPieceX + 1;
-          }
-          if (fallingPieceX < 0) fallingPieceX = 0;
+            if ((this.collisioned(piece, fallingPieceX, fallingPieceY, heightMax)))
+            {
+              fallingPieceX = fallingPieceX - 1;
+            }
+            if (fallingPieceX+piece.getSize() === constants.WidthBoard+1) fallingPieceX = fallingPieceX-1;
+          }  
         }
         break;
-        case constants.Enter: {
-            speed = constants.MaxSpeed;
+        case constants.ARROWRIGHT:  {
+          if (!pause) {
+              fallingPieceX = fallingPieceX - 1;
+              if ((this.collisioned(piece, fallingPieceX, fallingPieceY, heightMax)))
+              {
+                fallingPieceX = fallingPieceX + 1;
+              }
+              if (fallingPieceX < 0) fallingPieceX = 0;
+            }
           }  
-        break;
-        case constants.LetterP: {
+          break;
+        case constants.ENTER: {
+            speed = constants.MaxSpeed;
             debugger;
+            clearTimeout(timeout);
+            timeout = setTimeout(myFunction, speed);
+          }  
+          break;
+        case constants.LETTER_P: {
             pause = !pause;
           }  
-        break;
-        case constants.LetterR: {
-            piece.rotateRight();
-            if (fallingPieceX + piece.getSize()>constants.WidthBoard) {
-              piece.rotateLeft();
+          break;
+        case constants.LETTER_R: {
+            if (!pause) {
+              piece.rotateRight();
+              if ((fallingPieceX + piece.getSize()>constants.WidthBoard)||(this.collisioned(piece, fallingPieceX, fallingPieceY, heightMax))){
+                piece.rotateLeft();
+              }
             }
           } 
-        break;
-        case constants.LetterT: {
+          break;
+        case constants.LETTER_T: {
+          if (!pause) {
             piece.rotateLeft();
-            if (fallingPieceX + piece.getSize()>constants.WidthBoard)  {
+            if ((fallingPieceX + piece.getSize()>constants.WidthBoard)||(this.collisioned(piece, fallingPieceX, fallingPieceY, heightMax))) {
               piece.rotateRight();
             }
           } 
+        }  
+        break;
+        case constants.LETTER_S: {
+          if (!myAudio.paused) {
+            myAudio.pause();    
+          }
+          else {
+            myAudio.play();
+          } 
+        }  
         break;
       }
-      this.setState({ fallingPieceX, fallingPieceY, speed, pause});
+      this.setState({ fallingPieceX, fallingPieceY, speed, pause, heightMax});
     }
   }
  
   componentDidMount() {
-    const myFunction = () => {
-      let {piece, fallingPieceY, fallingPieceX, speed, squares, matchLost, pause} = this.state;
+
+    myFunction = () => {
+
+      let {piece, fallingPieceY, fallingPieceX, speed, squares, matchLost, pause, level, heightMax, score} = this.state;
 
       if (!pause) {
         fallingPieceY = fallingPieceY-1;
 
-        if ((fallingPieceY < 0) || (this.collisioned(piece, fallingPieceX, fallingPieceY))){
-          speed = constants.InitialSpeed; 
+        if (( fallingPieceY < 0 ) || ( this.collisioned(piece, fallingPieceX, fallingPieceY, heightMax) )) {
+
+          speed = constants.InitialSpeed - (level * 100);
           fallingPieceY = fallingPieceY +1;
           
-          matchLost = (fallingPieceY + piece.getHeight() > constants.HeightBoard); 
+          matchLost = ( fallingPieceY + piece.getHeight() > constants.HeightBoard ); 
           if (matchLost) {
             this.restartGame();
           }
           else {
-            
+            heightMax = ( fallingPieceY + piece.getHeight() > heightMax ) ? (fallingPieceY + piece.getHeight()): heightMax;
             let squaresPiece = piece.getSquares().map(function(square) {
               return ({posX: Math.floor(square%constants.SizePiece)+fallingPieceX, posY: Math.floor(square/constants.SizePiece)+fallingPieceY, aColor: piece.piece.aColor, id: uuidV4()});
             });
-
             squares = [...this.state.squares, ...squaresPiece];
             piece = new Piece();
             fallingPieceY= constants.HeightBoard;
@@ -163,27 +207,35 @@ class App extends Component {
           fallingPieceY: fallingPieceY,
           fallingPieceX: fallingPieceX,
           speed: speed,
-          squares: squares
+          squares: squares,
+          heightMax,
+          score
         });
       }
       
-      
-      this.detectLine();
+      //At least should have the width of the board complete to check for a line
+      if (this.state.squares.length >= constants.WidthBoard) {
+        this.detectLine();
+      }
 
-      setTimeout(myFunction, this.state.speed);
+      timeout = setTimeout(myFunction, this.state.speed);
+
     }
-    var timeout= setTimeout(myFunction, this.state.speed);
+    timeout = setTimeout(myFunction, this.state.speed);
+
   }
 
   render() {
+
     const pauseElement = (this.state.pause) ? <div className='pauseMessage'>PAUSE</div>: null; 
 
     return (
         <div className="container">
+          SCORE: {this.state.score}
+          LEVEL: {this.state.level}
           speed: {this.state.speed}
           {pauseElement}
           <Main {...this.state}/>
-
         </div>
     );
   }
