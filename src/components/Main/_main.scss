@@ -1,6 +1,8 @@
 .main {
   border: 2px solid black;
   border-top: none;
+  position: relative;
+  display: inline-block;
 }
 
 .animation-leave {
