@@ -4,14 +4,12 @@ import style from '../Square/square.scss';
 import Square from '../Square/Square.jsx';
 const uuidV4 = require('uuid/v4');
 
-import {SizeSquare} from '../../constants.js';
+import {SizeSquare, HeightBoard} from '../../constants.js';
 class Piece extends Component {
 	
   constructor(props) {
     super(props);
   }
-
-  
 
   render() {
     let squares = [];
@@ -19,7 +17,7 @@ class Piece extends Component {
     const newPiece = this.props.piece; 
 
     squares = newPiece.getSquares().map(function(square){
-        return <Square key={uuidV4()} posX={posX+(square % SizePiece)} posY={(posY+Math.floor(square / SizePiece))} aColor={newPiece.piece.aColor}/>;
+        return <Square key={uuidV4()} base={(HeightBoard-1)} posX={posX+(square % SizePiece)} posY={(posY+Math.floor(square / SizePiece))} aColor={newPiece.piece.aColor}/>;
     });
     return <div>{squares}</div>;
   }
