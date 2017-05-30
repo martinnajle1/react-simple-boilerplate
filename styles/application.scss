@@ -14,4 +14,12 @@ html, body, #react-root {
   margin: auto;
   margin-top: 50px;
 }
+
+.moduleNextPiece {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  margin: 20px;
+}	
 @import '../src/components/Main/main';

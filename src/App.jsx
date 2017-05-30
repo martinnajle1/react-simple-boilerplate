@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import keydown, { Keys } from 'react-keydown';
 // Components.
 import Piece from './components/Piece/Piece';
+import DisplayNextPiece from './components/DisplayNextPiece/DisplayNextPiece';
 // const uuidV4 = require('uuid/v4');
 import Main from './components/Main/Main';
 import constants from './constants.js';
@@ -20,7 +21,7 @@ class App extends Component {
 
     //TETRIS THEME
     myAudio.loop = true;
-    myAudio.play();
+    //myAudio.play();
 
     this.state = {
       level: 0,
@@ -33,7 +34,9 @@ class App extends Component {
       speed: constants.InitialSpeed,
       squares: [],
       matchLost: false,
-      pause: false
+      pause: false,
+      hardFall: false,
+      nextPiece: new Piece(),
     };
   }
 
@@ -49,6 +52,8 @@ class App extends Component {
       fallingPieceY: constants.HeightBoard,
       speed: constants.InitialSpeed,
       squares: [],
+      hardFall: false,
+      nextPiece: new Piece(),
     });
   }
 
@@ -93,14 +98,16 @@ class App extends Component {
   }
 
   getPoints (level, lines) {
-    return ((level+1)*constants.Weights[lines-1]);
+    let {hardFall} = this.state;
+    let duplicate = hardFall ? 2: 1;
+    return duplicate*((level+1)*constants.Weights[lines-1]);
   }
 
   componentWillReceiveProps( { keydown } ) {
 
     if ( keydown.event ) {
 
-      let {fallingPieceX, fallingPieceY, speed, piece, pause, heightMax} = this.state;
+      let {fallingPieceX, fallingPieceY, speed, piece, pause, heightMax, hardFall} = this.state;
 
       switch (keydown.event.which) {
 
@@ -128,7 +135,7 @@ class App extends Component {
           break;
         case constants.ENTER: {
             speed = constants.MaxSpeed;
-            debugger;
+            hardFall = true;
             clearTimeout(timeout);
             timeout = setTimeout(myFunction, speed);
           }  
@@ -165,15 +172,24 @@ class App extends Component {
         }  
         break;
       }
-      this.setState({ fallingPieceX, fallingPieceY, speed, pause, heightMax});
+      this.setState({ fallingPieceX, fallingPieceY, speed, pause, heightMax, hardFall});
     }
   }
  
   componentDidMount() {
 
+    const speedDown = function(evt){
+      if (evt.keyCode === constants.ENTER) {
+        let {level, speed} = this.state;
+        let levelSpeed = constants.InitialSpeed - (level * 100);
+        this.setState({speed:levelSpeed, hardFall: false});
+      }
+    }
+    document.addEventListener('keyup', speedDown.bind(this));
+
     myFunction = () => {
 
-      let {piece, fallingPieceY, fallingPieceX, speed, squares, matchLost, pause, level, heightMax, score} = this.state;
+      let {piece, nextPiece, fallingPieceY, fallingPieceX, speed, squares, matchLost, pause, level, heightMax, score} = this.state;
 
       if (!pause) {
         fallingPieceY = fallingPieceY-1;
@@ -193,7 +209,8 @@ class App extends Component {
               return ({posX: Math.floor(square%constants.SizePiece)+fallingPieceX, posY: Math.floor(square/constants.SizePiece)+fallingPieceY, aColor: piece.piece.aColor, id: uuidV4()});
             });
             squares = [...this.state.squares, ...squaresPiece];
-            piece = new Piece();
+            piece = nextPiece;
+            nextPiece = new Piece();
             fallingPieceY= constants.HeightBoard;
             fallingPieceX= 0;
           }
@@ -203,7 +220,8 @@ class App extends Component {
       if (!matchLost) {
           this.setState({
           matchLost,
-          piece: piece,
+          piece,
+          nextPiece,
           fallingPieceY: fallingPieceY,
           fallingPieceX: fallingPieceX,
           speed: speed,
@@ -212,7 +230,6 @@ class App extends Component {
           score
         });
       }
-      
       //At least should have the width of the board complete to check for a line
       if (this.state.squares.length >= constants.WidthBoard) {
         this.detectLine();
@@ -231,11 +248,14 @@ class App extends Component {
 
     return (
         <div className="container">
-          SCORE: {this.state.score}
-          LEVEL: {this.state.level}
-          speed: {this.state.speed}
+          <div>
+            SCORE: {this.state.score}
+            LEVEL: {this.state.level}
+            speed: {this.state.speed}
+          </div>
           {pauseElement}
           <Main {...this.state}/>
+          <DisplayNextPiece nextPiece={this.state.nextPiece}/>
         </div>
     );
   }
