@@ -5,12 +5,14 @@ import Piece from './components/Piece/Piece';
 import DisplayNextPiece from './components/DisplayNextPiece/DisplayNextPiece';
 // const uuidV4 = require('uuid/v4');
 import Main from './components/Main/Main';
+import Score from './components/Score/Score';
 import constants from './constants.js';
 
 const uuidV4 = require('uuid/v4');
 const myAudio = new Audio('../sounds/Tetris_theme.ogg');
 
 let myFunction;
+
 var timeout;
 
 @keydown
@@ -177,8 +179,8 @@ class App extends Component {
   }
  
   componentDidMount() {
-
-    const speedDown = function(evt){
+     
+   const speedDown = function(evt){
       if (evt.keyCode === constants.ENTER) {
         let {level, speed} = this.state;
         let levelSpeed = constants.InitialSpeed - (level * 100);
@@ -222,9 +224,10 @@ class App extends Component {
           matchLost,
           piece,
           nextPiece,
+          level,
+          speed,
           fallingPieceY: fallingPieceY,
           fallingPieceX: fallingPieceX,
-          speed: speed,
           squares: squares,
           heightMax,
           score
@@ -248,11 +251,9 @@ class App extends Component {
 
     return (
         <div className="container">
-          <div>
-            SCORE: {this.state.score}
-            LEVEL: {this.state.level}
-            speed: {this.state.speed}
-          </div>
+          <Score  score = {this.state.score}
+            level = {this.state.level}
+            speed = {this.state.speed} />
           {pauseElement}
           <Main {...this.state}/>
           <DisplayNextPiece nextPiece={this.state.nextPiece}/>

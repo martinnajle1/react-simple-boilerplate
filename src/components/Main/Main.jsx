@@ -18,7 +18,6 @@ class Main extends Component {
     return (
       <div className="main" style={{height: HeightBoard*SizeSquare, width: WidthBoard*SizeSquare}}>
         <Piece piece={this.props.piece} posX={this.props.fallingPieceX} posY={this.props.fallingPieceY} />      
-        ficha cayendo: <br/> Numero de cuadraditos: {this.props.squares.length}
         <br/> 
           <ReactCSSTransitionGroup transitionEnterTimeout={500}
           transitionLeaveTimeout={400} transitionName="animation">
