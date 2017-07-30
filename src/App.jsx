@@ -3,6 +3,7 @@ import keydown, { Keys } from 'react-keydown';
 // Components.
 import Piece from './components/Piece/Piece';
 import DisplayNextPiece from './components/DisplayNextPiece/DisplayNextPiece';
+import Scorer from './components/Scorer/Scorer';
 // const uuidV4 = require('uuid/v4');
 import Main from './components/Main/Main';
 import constants from './constants.js';
@@ -245,14 +246,10 @@ class App extends Component {
   render() {
 
     const pauseElement = (this.state.pause) ? <div className='pauseMessage'>PAUSE</div>: null; 
-
+    const {score, level, speed} = this.state;  
     return (
         <div className="container">
-          <div>
-            SCORE: {this.state.score}
-            LEVEL: {this.state.level}
-            speed: {this.state.speed}
-          </div>
+          {Scorer({score, level, speed})}
           {pauseElement}
           <Main {...this.state}/>
           <DisplayNextPiece nextPiece={this.state.nextPiece}/>
