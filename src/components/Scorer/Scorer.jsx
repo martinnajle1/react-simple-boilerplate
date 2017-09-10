@@ -2,9 +2,9 @@ import React from 'react';
 const Scorer = ({score, level, speed}) => {
 	return (
 	  <div className = 'moduleScorer'>
-	  	<div>score</div>	
-	  	<div>level</div>	
-	  	<div>speed</div>	
+	  	<div>score: {score}</div>	
+	  	<div>level: {level}</div>	
+	  	<div>speed: {speed}</div>	
 	  </div>
 	)
 }
