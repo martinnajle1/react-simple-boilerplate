@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import keydown, { Keys } from 'react-keydown';
+import * as d3 from "d3";
 // Components.
 import Piece from './components/Piece/Piece';
 import DisplayNextPiece from './components/DisplayNextPiece/DisplayNextPiece';
@@ -7,7 +8,6 @@ import Scorer from './components/Scorer/Scorer';
 // const uuidV4 = require('uuid/v4');
 import Main from './components/Main/Main';
 import constants from './constants.js';
-
 const uuidV4 = require('uuid/v4');
 const myAudio = new Audio('../sounds/Tetris_theme.ogg');
 
@@ -144,6 +144,16 @@ class App extends Component {
           break;
         case constants.LETTER_P: {
             pause = !pause;
+            if (pause) {
+              debugger;
+              //function aparte de pause 
+              // arreglar warning
+              d3.selectAll('.square').style('opacity', 0.3);
+            }
+            else 
+            {
+              d3.selectAll('.square').style('opacity', 1);
+            }
           }  
           break;
         case constants.LETTER_R: {
