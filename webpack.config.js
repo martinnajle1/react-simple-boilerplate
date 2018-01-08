@@ -1,10 +1,10 @@
 var path = require('path');
 var webpack = require('webpack');
-
+const PORT = process.env.PORT || 3000;
 module.exports = {
   devtool: 'eval',
   entry: [
-    'webpack-dev-server/client?http://localhost:3000',
+    'webpack-dev-server/client?http://localhost:'+PORT,
     './src/index.jsx'
   ],
   output: {
