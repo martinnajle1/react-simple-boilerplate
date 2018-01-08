@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 3000;
 module.exports = {
   devtool: 'eval',
   entry: [
-    'webpack-dev-server/client?http://localhost:'+PORT,
+    'webpack-dev-server/client?http://localhost:'+PORT+' --disable-host-check',
     './src/index.jsx'
   ],
   output: {
