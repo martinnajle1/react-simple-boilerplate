@@ -6,7 +6,6 @@ import * as d3 from 'd3';
 import Piece from './components/Piece/Piece';
 import DisplayNextPiece from './components/DisplayNextPiece/DisplayNextPiece';
 import Scorer from './components/Scorer/Scorer';
-// const uuidV4 = require('uuid/v4');
 import Main from './components/Main/Main';
 import constants from './constants.js';
 import uuidV4 from 'uuid/v4';
