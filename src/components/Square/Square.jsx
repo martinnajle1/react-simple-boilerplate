@@ -1,24 +1,26 @@
-import React, { Component } from 'react';
-import {HeightBoard, SizeSquare} from '../../constants.js';
-import square from './square.scss';
-const classNames = require('classnames');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {SizeSquare} from '../../constants.js';
+import './square.scss';
+import classNames from 'classnames';
 
+const Square = (props) => {
+  const {posX, posY, base, aColor} = props;
+  return (
+    <div className={classNames(aColor, 'square')} style={{
+      'left': `${posX * SizeSquare}px`,
+      'top': `${(base * SizeSquare) - (posY * SizeSquare)}px`,
+      'height': `${SizeSquare}px`,
+      'width': `${SizeSquare}px`
+    }}/>
+  );
+};
 
-
-class Square extends Component {
-	
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return <div className={classNames(this.props.aColor, 'square')} style={{ 
-    	left:(this.props.posX*SizeSquare)+'px',  
-	    top:((this.props.base*SizeSquare)-this.props.posY*SizeSquare)+'px', 
-	    height: SizeSquare +'px', 
-	    width: SizeSquare +'px'
-	  }}/>;
-  }
-}
+Square.propTypes = {
+  'posX': PropTypes.number,
+  'posY': PropTypes.number,
+  'base': PropTypes.number,
+  'aColor': PropTypes.string
+};
 
 export default Square;

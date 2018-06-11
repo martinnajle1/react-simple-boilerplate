@@ -1,28 +1,26 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import {SizePiece} from '../../constants.js';
 import Square from '../Square/Square.jsx';
-const uuidV4 = require('uuid/v4');
-
-import {SizeSquare} from '../../constants.js';
+import uuidV4 from 'uuid/v4';
 import './DisplayNextPiece.scss';
-class DisplayNextPiece extends Component {
-	
-  constructor(props) {
-    super(props);
-  }
+const DisplayNextPiece = (props) => {
+  let squares = [];
+  let posX = 0;
+  let posY = 0;
 
-  render() {
-    let squares = [];
-    let posX = 0;
-    let posY = 0;
+  const newPiece = props.nextPiece;
 
-    const newPiece = this.props.nextPiece; 
-
-    squares = newPiece.getSquares().map(function(square){
-        return <Square base={3} key={uuidV4()} posX={posX+(square % SizePiece)} posY={(posY+Math.floor(square / SizePiece))} aColor={newPiece.piece.aColor}/>;
-    });
-    return <div className='moduleNextPiece'><div className='nextPiece'>{squares}</div></div>;
-  }
-}
-
+  squares = newPiece.getSquares().map(function (square) {
+    return (<Square base={3} key={uuidV4()}
+      posX={posX + (square % SizePiece)}
+      posY={(posY + Math.floor(square / SizePiece))}
+      aColor={newPiece.piece.aColor}/>
+    );
+  });
+  return <div className="moduleNextPiece"><div className="nextPiece">{squares}</div></div>;
+};
+DisplayNextPiece.propTypes = {
+  'nextPiece': PropTypes.arrayOf(PropTypes.object)
+};
 export default DisplayNextPiece;

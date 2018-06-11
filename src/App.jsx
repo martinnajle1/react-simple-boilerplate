@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import keydown, { Keys } from 'react-keydown';
-import * as d3 from "d3";
+import keydown from 'react-keydown';
+import * as d3 from 'd3';
 // Components.
 import Piece from './components/Piece/Piece';
 import DisplayNextPiece from './components/DisplayNextPiece/DisplayNextPiece';
@@ -8,7 +8,7 @@ import Scorer from './components/Scorer/Scorer';
 // const uuidV4 = require('uuid/v4');
 import Main from './components/Main/Main';
 import constants from './constants.js';
-const uuidV4 = require('uuid/v4');
+import uuidV4 from 'uuid/v4';
 const myAudio = new Audio('../sounds/Tetris_theme.ogg');
 
 let myFunction;
@@ -38,7 +38,7 @@ class App extends Component {
       matchLost: false,
       pause: false,
       hardFall: false,
-      nextPiece: new Piece(),
+      nextPiece: new Piece()
     };
   }
 
@@ -55,7 +55,7 @@ class App extends Component {
       speed: constants.InitialSpeed,
       squares: [],
       hardFall: false,
-      nextPiece: new Piece(),
+      nextPiece: new Piece()
     });
   }
 
@@ -89,7 +89,7 @@ class App extends Component {
     }
   }
 
-  collisioned (pieceFalling, fallingX, fallingY, heightMax) {
+  collisioned(pieceFalling, fallingX, fallingY, heightMax) {
     if (fallingY>heightMax) return false;
     return this.state.squares.some(function(square){
       return pieceFalling.getSquares().some( function(squareFalling) {
@@ -99,10 +99,19 @@ class App extends Component {
     });
   }
 
-  getPoints (level, lines) {
+  getPoints(level, lines) {
     let {hardFall} = this.state;
     let duplicate = hardFall ? 2: 1;
     return duplicate*((level+1)*constants.Weights[lines-1]);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.pause) {
+        d3.selectAll('.square').style('opacity', 0.3);
+      }
+      else {
+        d3.selectAll('.square').style('opacity', 1);
+      }
   }
 
   componentWillReceiveProps( { keydown } ) {
@@ -116,11 +125,11 @@ class App extends Component {
         case constants.ARROWLEFT: {
           if (!pause) {
             fallingPieceX = fallingPieceX + 1;
-            if ((this.collisioned(piece, fallingPieceX, fallingPieceY, heightMax)))
-            {
+            if ((this.collisioned(piece, fallingPieceX, fallingPieceY, heightMax))) {
               fallingPieceX = fallingPieceX - 1;
             }
             if (fallingPieceX+piece.getSize() === constants.WidthBoard+1) fallingPieceX = fallingPieceX-1;
+            this.setState({ fallingPieceX, fallingPieceY, heightMax});
           }  
         }
         break;
@@ -132,28 +141,23 @@ class App extends Component {
                 fallingPieceX = fallingPieceX + 1;
               }
               if (fallingPieceX < 0) fallingPieceX = 0;
+              this.setState({ fallingPieceX, fallingPieceY, heightMax});
             }
           }  
           break;
         case constants.ENTER: {
+          if (!pause) {
             speed = constants.MaxSpeed;
             hardFall = true;
             clearTimeout(timeout);
             timeout = setTimeout(myFunction, speed);
+            this.setState({ speed, hardFall});
+            }
           }  
           break;
         case constants.LETTER_P: {
             pause = !pause;
-            if (pause) {
-              debugger;
-              //function aparte de pause 
-              // arreglar warning
-              d3.selectAll('.square').style('opacity', 0.3);
-            }
-            else 
-            {
-              d3.selectAll('.square').style('opacity', 1);
-            }
+            this.setState({ pause});
           }  
           break;
         case constants.LETTER_R: {
@@ -162,18 +166,20 @@ class App extends Component {
               if ((fallingPieceX + piece.getSize()>constants.WidthBoard)||(this.collisioned(piece, fallingPieceX, fallingPieceY, heightMax))){
                 piece.rotateLeft();
               }
+              this.setState({ fallingPieceX, fallingPieceY, heightMax});
             }
           } 
           break;
         case constants.LETTER_T: {
-          if (!pause) {
-            piece.rotateLeft();
-            if ((fallingPieceX + piece.getSize()>constants.WidthBoard)||(this.collisioned(piece, fallingPieceX, fallingPieceY, heightMax))) {
-              piece.rotateRight();
-            }
-          } 
-        }  
-        break;
+            if (!pause) {
+              piece.rotateLeft();
+              if ((fallingPieceX + piece.getSize()>constants.WidthBoard)||(this.collisioned(piece, fallingPieceX, fallingPieceY, heightMax))) {
+                piece.rotateRight();
+              }
+              this.setState({ fallingPieceX, fallingPieceY});
+            } 
+          }  
+          break;
         case constants.LETTER_S: {
           if (!myAudio.paused) {
             myAudio.pause();    
@@ -184,7 +190,6 @@ class App extends Component {
         }  
         break;
       }
-      this.setState({ fallingPieceX, fallingPieceY, speed, pause, heightMax, hardFall});
     }
   }
  
@@ -192,7 +197,7 @@ class App extends Component {
      
    const speedDown = function(evt){
       if (evt.keyCode === constants.ENTER) {
-        let {level, speed} = this.state;
+        let {level} = this.state;
         let levelSpeed = constants.InitialSpeed - (level * 100);
         this.setState({speed:levelSpeed, hardFall: false});
       }
@@ -261,8 +266,8 @@ class App extends Component {
     const {score, level, speed} = this.state;  
     return (
         <div className="container">
-          {Scorer({score, level, speed})}
-          {pauseElement}
+          {Scorer({ score, level, speed })}
+          { pauseElement }
           <Main {...this.state}/>
           <DisplayNextPiece nextPiece={this.state.nextPiece}/>
         </div>
