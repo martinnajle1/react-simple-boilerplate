@@ -21,5 +21,14 @@ html, body, #react-root {
   height: 100px;
   position: absolute;
   margin: 20px;
-}	
-@import '../src/components/Main/main';
+}
+
+.pauseMessage {
+  border-radius: 5%;
+  border: 1px solid gray;
+  padding: 5px;
+  font-size: 28px;
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+}
