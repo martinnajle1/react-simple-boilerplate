@@ -39,6 +39,6 @@ const DisplayNextPiece = (props) => {
   );
 };
 DisplayNextPiece.propTypes = {
-  'nextPiece': PropTypes.arrayOf(PropTypes.object)
+  'nextPiece': PropTypes.object
 };
 export default DisplayNextPiece;

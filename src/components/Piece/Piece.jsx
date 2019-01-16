@@ -20,6 +20,6 @@ const Piece = (props) => {
 Piece.propTypes = {
   'posX': PropTypes.number,
   'posY': PropTypes.number,
-  'piece': PropTypes.arrayOf(PropTypes.object)
+  'piece': PropTypes.object
 };
 export default Piece;

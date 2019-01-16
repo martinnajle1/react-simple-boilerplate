@@ -44,7 +44,7 @@ const Main = (props) => {
   );
 };
 Main.propTypes = {
-  'piece': PropTypes.arrayOf(PropTypes.object),
+  'piece': PropTypes.object,
   'fallingPieceX': PropTypes.number,
   'fallingPieceY': PropTypes.number,
   'squares': PropTypes.array
