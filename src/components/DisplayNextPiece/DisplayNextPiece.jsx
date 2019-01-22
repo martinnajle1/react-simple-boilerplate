@@ -5,36 +5,49 @@ import Square from '../Square/Square.jsx';
 import uuidV4 from 'uuid/v4';
 import styled from 'styled-components';
 
+
+const WrapperModule = styled.div`
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20px rgb(129, 183, 255);
+  -moz-box-shadow: inset 0 0 20px rgb(129, 183, 255);
+  -webkit-box-shadow: inset 0 0 20px rgb(129, 183, 255);
+  background: rgb(227, 242, 255);
+`;
 const StyledNextPiece = styled.div`
-  border: 3px solid red;
   width: 80px;
   height: 80px;
-  position: absolute;
+  border-radius: 3px;
+  position: relative;
+`;
+
+const StyledSquare = styled(Square)`
+   margin: auto;
+   box-sizing: border-box;
+   border:gray solid 1px;               
+   border-radius: 3px; 
+   position: absolute;
 `;
 
 const DisplayNextPiece = (props) => {
   let squares = [];
-  let posX = 0;
-  let posY = 0;
-
   const newPiece = props.nextPiece;
 
-  const StyledSquare = styled(Square)`
-   box-sizing: border-box;
-   border:gray solid 1px;               
-   border-radius: 3px; 
-   position: absolute; 
-`;
   squares = newPiece.getSquares().map(function (square) {
     return (<StyledSquare base={3} key={uuidV4()}
-      posX={posX + (square % SizePiece)}
-      posY={(posY + Math.floor(square / SizePiece))}
+      posX={(square % SizePiece)}
+      posY={(Math.floor(square / SizePiece))}
       aColor={newPiece.piece.aColor}/>
     );
   });
   return (
     <div className="moduleNextPiece">
-      <StyledNextPiece>{squares}</StyledNextPiece>
+      <WrapperModule>
+        <StyledNextPiece>{squares}</StyledNextPiece>
+      </WrapperModule>
     </div>
   );
 };

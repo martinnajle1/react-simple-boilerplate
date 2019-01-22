@@ -11,6 +11,10 @@ const Square = (props) => {
     'height': `${SizeSquare}px`,
     'width': `${SizeSquare}px`
   };
+  /* box-shadow: inset 0 0 5px ${aColor};
+    -moz-box-shadow: inset 0 0 5px ${aColor};
+    -webkit-box-shadow: inset 0 0 5px ${aColor};*/
+
   const StyledSquare = styled.div`
     border: 3px solid red;
     width: 80px;

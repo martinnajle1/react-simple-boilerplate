@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import keydown from 'react-keydown';
 import * as d3 from 'd3';
 import uuidV4 from 'uuid/v4';
+import {Link} from 'react-router-dom';
 const myAudio = new Audio('../sounds/Tetris_theme.ogg');
 import constants from '../../constants.js';
 // Components.
@@ -10,6 +11,8 @@ import Piece from '../../components/Piece/Piece';
 import DisplayNextPiece from '../../components/DisplayNextPiece/DisplayNextPiece';
 import Scorer from '../../components/Scorer/Scorer';
 import Main from '../../components/Main/Main';
+
+// App.js
 
 let myFunction;
 
@@ -283,7 +286,7 @@ class Game extends Component {
     const pauseElement = (this.state.pause) ? <div className="pauseMessage">PAUSE</div> : null;
     const {score, level, speed} = this.state;
     return (
-        <div className="container">
+        <div>
           {Scorer({score, level, speed})}
           { pauseElement }
           <Main {...this.state}/>
