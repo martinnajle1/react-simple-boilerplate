@@ -13,7 +13,7 @@ const data = [
 
 const ranking = () => {
   return (
-    <div style={{'background-color': 'rgba(227, 242, 255, 0.6)',
+    <div style={{ 'background-color': 'rgba(227, 242, 255, 0.6)',
       'padding': '20px',
       'border': '1px solid lightblue',
       'border-radius': '10px' }}
