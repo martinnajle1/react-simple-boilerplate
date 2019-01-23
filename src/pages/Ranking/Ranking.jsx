@@ -11,12 +11,12 @@ const data = [
   {'name': 'Marina', 'score': 300}
 ];
 
-const ranking = () => {
+const ranking = () = {
   return (
     <div style={{ 'background-color': 'rgba(227, 242, 255, 0.6)',
       'padding': '20px',
       'border': '1px solid lightblue',
-      'border-radius': '10px'}}a
+      'border-radius': '10px'}}
     >
       <h1>RANKING:</h1>
       { data.map((person, index) =>
