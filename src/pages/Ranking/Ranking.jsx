@@ -16,7 +16,7 @@ const ranking = () => {
     <div style={{ 'background-color': 'rgba(227, 242, 255, 0.6)',
       'padding': '20px',
       'border': '1px solid lightblue',
-      'border-radius': '10px'}}
+      'border-radius': '10px'}}a
     >
       <h1>RANKING:</h1>
       { data.map((person, index) =>
