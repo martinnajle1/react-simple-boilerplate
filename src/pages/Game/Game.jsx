@@ -120,6 +120,7 @@ class Game extends Component {
       d3.selectAll('.square').style('opacity', 1);
     }
   }
+
   /* eslint no-shadow: "off" */
   componentWillReceiveProps({keydown}) {
     if (keydown.event) {
@@ -160,7 +161,7 @@ class Game extends Component {
       }
         break;
       case constants.ENTER: {
-        if (!pause) {
+        if ((!pause) && (!hardFall)) {
           speed = constants.MaxSpeed;
           hardFall = true;
           clearTimeout(timeout);
@@ -208,11 +209,28 @@ class Game extends Component {
       }
     }
   }
+  // var throttled = _.throttle(renewToken, 50);
+  getSpeed() {
+    let {level} = this.state;
+    switch (level) {
+    case 0: return 700;
+    case 1: return 600;
+    case 2: return 500;
+    case 3: return 400;
+    case 4: return 350;
+    case 5: return 300;
+    case 6: return 250;
+    case 7: return 200;
+    case 8: return 150;
+    case 9: return 100;
+    default: return 100;
+    }
+  }
+
   componentDidMount() {
     const speedDown = function (evt) {
       if (evt.keyCode === constants.ENTER) {
-        let {level} = this.state;
-        let levelSpeed = constants.InitialSpeed - (level * 100);
+        let levelSpeed = this.getSpeed();
         this.setState({'speed': levelSpeed, 'hardFall': false});
       }
     };
@@ -235,7 +253,7 @@ class Game extends Component {
         fallingPieceY = fallingPieceY - 1;
         if ((fallingPieceY < 0) ||
           (this.collisioned(piece, fallingPieceX, fallingPieceY, heightMax))) {
-          speed = constants.InitialSpeed - (level * 100);
+          speed = constants.InitialSpeed - (level * 50);
           fallingPieceY = fallingPieceY + 1;
           matchLost = (fallingPieceY + piece.getHeight() > constants.HeightBoard);
           if (matchLost) {

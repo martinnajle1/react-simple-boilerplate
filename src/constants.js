@@ -13,7 +13,7 @@ const constants = {
   'LETTER_S': 83,
   'LETTER_P': 80,
   'ENTER': 13,
-  'MaxSpeed': 10,
+  'MaxSpeed': 50,
   'Weights': [40, 100, 300, 1200],
   'Pieces': [{
     'name': 'Stick',
