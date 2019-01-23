@@ -54,4 +54,4 @@ const DisplayNextPiece = (props) => {
 DisplayNextPiece.propTypes = {
   'nextPiece': PropTypes.object
 };
-export default DisplayNextPiece;
+export default React.memo(DisplayNextPiece);
