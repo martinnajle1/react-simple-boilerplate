@@ -11,7 +11,7 @@ const data = [
   {'name': 'Marina', 'score': 300}
 ];
 
-const ranking = () = {
+const ranking = () => {
   return (
     <div style={{ 'background-color': 'rgba(227, 242, 255, 0.6)',
       'padding': '20px',
