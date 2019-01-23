@@ -13,10 +13,19 @@ const data = [
 
 const ranking = () => {
   return (
-    <div>
+    <div style={{'background-color': 'rgba(255, 0, 0, 0.2)', 'padding': '20px'}}>
+      <h1>RANKING:</h1>
       { data.map((person, index) =>
-        <span key={person.name + index}>{person.name} -- {person.score}
-        </span>)
+        <h1
+          style={{
+            'text-align': 'center',
+            'padding': '5px',
+            'display': 'block',
+            'margin': 'auto'}}
+          key={person.name + index}
+        >
+          <strong>({index + 1})</strong> {person.name} -- {person.score}
+        </h1>)
       }
     </div>
   );
