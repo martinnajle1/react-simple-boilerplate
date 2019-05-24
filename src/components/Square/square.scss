@@ -1,0 +1,38 @@
+.square {
+   box-sizing: border-box;
+   border:gray solid 1px;               
+   border-radius: 3px; 
+   position: absolute; 
+}
+
+.pauseMessage {
+  border-radius: 5%;
+  border: 1px solid gray;
+  padding: 5px;
+  font-size: 28px;
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+}
+
+.magenta {
+  background: magenta;
+}
+.red {
+  background: red;
+}
+.yellow {
+  background: yellow;
+}
+.cyan {
+  background: cyan;
+}
+.blue {
+  background: blue;
+}
+.green {
+  background: green;
+}
+.orange {
+  background: orange;
+}

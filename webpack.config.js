@@ -1,10 +1,10 @@
 var path = require('path');
 var webpack = require('webpack');
-
+const PORT = process.env.PORT || 3000;
 module.exports = {
   devtool: 'eval',
   entry: [
-    'webpack-dev-server/client?http://localhost:3000',
+    'webpack-dev-server/client?http://localhost:'+PORT,
     './src/index.jsx'
   ],
   output: {
@@ -16,8 +16,9 @@ module.exports = {
     loaders: [
       {
         test: /\.jsx?$/,
-        loaders: ['babel'],
-        include: path.join(__dirname, 'src')
+        loaders: ['babel-loader'],
+        include: path.join(__dirname, 'src'),
+        exclude: /node_modules/
       },
       {
         test: /\.scss$/,
@@ -27,5 +28,8 @@ module.exports = {
   },
   resolve: {
     extensions: ['', '.js', '.jsx']
-  }
+  },
+  externals:[{
+    xmlhttprequest: '{XMLHttpRequest:XMLHttpRequest}'
+}]
 }

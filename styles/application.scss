@@ -1,9 +1,25 @@
 // This is the top-level scss file. Import all other files in here.
+@import 'reset';
 @import 'home';
 
 html, body, #react-root {
   height: 100%;
   width: 100%;
+  background-image: url('/images/background.jpg');
+  background-repeat: no-repeat;
+  background-size: 100% 100%; 
+}
+.container {
+  width: 600px;
+  margin: auto;
+  margin-top: 50px;
 }
 
+.moduleNextPiece {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  margin: 20px;
+}	
 @import '../src/components/Main/main';
